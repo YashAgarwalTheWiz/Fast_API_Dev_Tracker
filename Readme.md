@@ -2,6 +2,9 @@
 
 A full-stack DSA (Data Structures & Algorithms) practice tracker built with **FastAPI** and **Streamlit**. Designed with a production-grade layered architecture — log problems daily, track consistency through a streak calendar, and visualize progress through charts.
 
+## 🌐 Live Demo
+[**Try it here →**](https://fastapidevtracker-cg7uxcba2qfdwvkuw78wse.streamlit.app/)
+
 ---
 
 ## 🚀 Features
@@ -55,7 +58,6 @@ HTTP Request
 ## 📁 Project Structure
 
 ```
-fastapi/
 │
 ├── main.py                   # FastAPI app, lifespan, and route registration
 ├── database.py               # SQLAlchemy engine, SessionLocal, Base
@@ -92,7 +94,7 @@ fastapi/
 
 ```bash
 git clone https://github.com/YashAgarwalTheWiz/Fast_API_Dev_Tracker.git
-cd Fast_API_Dev_Tracker/fastapi
+cd Fast_API_Dev_Tracker
 ```
 
 ### 2. Create a virtual environment
@@ -170,7 +172,7 @@ streamlit run frontend.py
 | GET    | `/count_by_topic`       | ✅   | Problem count grouped by topic      |
 | GET    | `/filter_by_difficulty` | ✅   | Filter problems by difficulty       |
 
-Interactive API docs available at `http://127.0.0.1:8000/docs`
+Interactive API docs available at `https://fast-api-dev-tracker.onrender.com/docs`
 
 ---
 
