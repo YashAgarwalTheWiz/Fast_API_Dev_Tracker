@@ -26,12 +26,12 @@ if st.button('login'):
     if not email or not password:
         st.error("Please enter email and password")
     else:
-        response=requests.post(url+'/login',json=payload).json()
-        if response:
-            st.session_state['token']=response['access_token']
+        response = requests.post(url+'/login', json=payload).json()
+        if response and 'access_token' in response:
+            st.session_state['token'] = response['access_token']
             st.switch_page('pages/tracker.py')
         else:
-            st.error('login failed')
+            st.error('Invalid email or password')
         
 
 #register button 

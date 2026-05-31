@@ -85,11 +85,14 @@ if st.button("save data"):
 #viewing the data
 st.divider()
 if st.button("see data"):
-    data=requests.get(url+'/my_problems',headers=headers).json()
-    df = pd.DataFrame(data)
-    df.drop(columns=['user_id'],inplace=True)
-    df.index=df.index+1
-    st.dataframe(df)
+    data = requests.get(url+'/my_problems', headers=headers).json()
+    if not data:
+        st.info("No problems logged yet.")
+    else:
+        df = pd.DataFrame(data)
+        df.drop(columns=['user_id'], inplace=True)
+        df.index = df.index + 1
+        st.dataframe(df)
 
 #pie charts
 if st.button('pie chart by difficulty'):
