@@ -30,7 +30,7 @@ dates=requests.get(url+'/activedates',headers=headers).json()
 
 #subheader 
 months=["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
-st.subheader(f"📅 {months[date.today().month-1]} 2025 Activity")
+st.subheader(f"📅 {months[date.today().month-1]} {date.today().year} Activity")
 days_col=st.columns(7)
 
 #for priniting the boxes
@@ -38,7 +38,7 @@ days_list = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
 for i in range(0,7):
     with days_col[i]:
         st.write(days_list[i])
-dates_list=[row[0] for row in dates]
+dates_list=[row['entry_date'] for row in dates]
 cols=st.columns(7)
 weekday,total_days=calendar.monthrange(date.today().year,date.today().month)
 for day in range(1,total_days+1):
@@ -53,7 +53,7 @@ for day in range(1,total_days+1):
         cols=st.columns(7)
 
 #calculating the streak
-streak=streak_calculator(dates)
+streak=streak_calculator(dates_list)
 st.write(f'your streak is {streak}')
 st.divider()
 
@@ -72,18 +72,22 @@ payload={
 
 #saving the data
 if st.button("save data"):
-    response = requests.post(url+'/insert_data', json=payload, headers=headers)
-    if response.status_code==200:
-        st.write('saved successfully')
+    if not problems:
+        st.error('please add problem name')
     else:
-        st.write('kuch fata')
+        response = requests.post(url+'/insert_data', json=payload, headers=headers)
+        if response.status_code==200:
+            st.write('saved successfully')
+            st.rerun()
+        else:
+            st.write('kuch fata')
 
 #viewing the data
 st.divider()
 if st.button("see data"):
-    data=requests.get(url+'/show_users',headers=headers).json()
-    df = pd.DataFrame(data, columns=["Problem", "Topic", "Difficulty", "Date", "User ID"])
-    df.drop(columns=['User ID'],inplace=True)
+    data=requests.get(url+'/my_problems',headers=headers).json()
+    df = pd.DataFrame(data)
+    df.drop(columns=['user_id'],inplace=True)
     df.index=df.index+1
     st.dataframe(df)
 
@@ -92,9 +96,9 @@ if st.button('pie chart by difficulty'):
     response=requests.get(url+'/count_by_difficulty',headers=headers)
     sizes=[]
     labels=[]
-    for size,label in response.json():
-        sizes.append(size)
-        labels.append(label)
+    for row in response.json():
+        sizes.append(row['count'])
+        labels.append(row['difficulty'])  # or row['topic'] for the topic chart
     fig,ax=plt.subplots(figsize=(2,2))
     ax.pie(sizes,labels=labels,autopct='%1.1f%%',textprops={'fontsize': 8})
     ax.set_title("Problems by Difficulty")
@@ -106,9 +110,9 @@ if st.button('pie chart by topic'):
     response=requests.get(url+'/count_by_topic',headers=headers)
     sizes=[]
     labels=[]
-    for size,label in response.json():
-        sizes.append(size)
-        labels.append(label)
+    for row in response.json():
+        sizes.append(row['count'])
+        labels.append(row['topic'])  
     fig,ax=plt.subplots(figsize=(2,2))
     ax.pie(sizes,labels=labels,autopct='%1.1f%%',textprops={'fontsize': 8})
     ax.set_title("Problems by topic")

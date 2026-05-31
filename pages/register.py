@@ -1,5 +1,6 @@
 import streamlit as st
 import requests
+from utils import validate_password,validate_email_util
 
 st.markdown("""
 <style>
@@ -16,7 +17,11 @@ url="http://127.0.0.1:8000"
 #main section
 name=st.text_input('enter your name')
 email=st.text_input('enter your email')
-password=st.text_input('enter your password',type='password')
+password=st.text_input('enter your password', type='password', help="Min 8 chars, 1 uppercase, 1 number, 1 special character")
+
+if email and not validate_email_util(email):
+    st.error("Please enter a valid email address")
+    st.stop()
 
 payload={
     'name':name,
@@ -24,17 +29,20 @@ payload={
     'password':password
 }
 
-#register button
 if st.button('register'):
     if not email or not password or not name:
         st.error("Please enter email, name and password")
     else:
-        response=requests.post(url+'/register',json=payload).json()
-        if response=='success':
-            st.write('user_registered pls login again')
-            st.switch_page('frontend.py')
+        error = validate_password(password)
+        if error:
+            st.error(error)
         else:
-            st.error('Duplicate email-id')
+            response=requests.post(url+'/register',json=payload).json()
+            if response.get('message') == 'registered successfully':
+                st.write('user_registered pls login again')
+                st.switch_page('frontend.py')
+            else:
+                st.error('Duplicate email-id')
 
 #login button
 if st.button('wanna login?'):
