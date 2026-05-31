@@ -24,7 +24,7 @@ if 'token' not in st.session_state:
 token = st.session_state['token']
 headers = {"Authorization": f"Bearer {token}"}
 
-url="http://127.0.0.1:8000"
+url = "https://fast-api-dev-tracker.onrender.com"
 
 dates=requests.get(url+'/activedates',headers=headers).json()
 
