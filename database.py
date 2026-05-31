@@ -1,7 +1,12 @@
+import os
 from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
+from dotenv import load_dotenv
 
-engine = create_engine("postgresql://yash:1234@localhost:5432/devtracker")
+load_dotenv()
+
+DATABASE_URL = os.getenv("DATABASE_URL", "postgresql://yash:1234@localhost:5432/devtracker")
+engine = create_engine(DATABASE_URL)
 SessionLocal = sessionmaker(bind=engine)
 Base = declarative_base()
